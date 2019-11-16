@@ -1,29 +1,20 @@
 package br.com.iagocolodetti.heroi;
 
+import br.com.iagocolodetti.heroi.repository.CustomRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+/**
+ *
+ * @author iagocolodetti
+ */
 @SpringBootApplication
+@EnableJpaRepositories (repositoryBaseClass = CustomRepositoryImpl.class)
 public class HeroiRestApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(HeroiRestApplication.class, args);
-    }
-    
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
-            }
-        };
     }
 
 }

@@ -1,6 +1,9 @@
-package br.com.iagocolodetti.heroi;
+package br.com.iagocolodetti.heroi.configuration;
 
+import com.google.common.collect.Lists;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +16,12 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -25,7 +32,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @RestController
-@RequestMapping({"/docs", "/swagger", "/api"})
+@RequestMapping({"/", "/docs", "/swagger", "/api"})
 public class SwaggerConfig {
     
     @Autowired
@@ -43,16 +50,32 @@ public class SwaggerConfig {
             .apis(RequestHandlerSelectors.basePackage("br.com.iagocolodetti.heroi.controller"))
             .paths(PathSelectors.any())
             .build()
-            .apiInfo(apiInfo());
+            .apiInfo(apiInfo())
+            .securitySchemes(Lists.newArrayList(apiKey()))
+            .securityContexts(Arrays.asList(securityContext()));
     }
     
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("SpringHeroiREST API")
             .description("API para listar, adicionar e excluir heróis.")
-            .version("1.0.1")
+            .version("2.0")
             .contact(new Contact("Iago Colodetti", "https://github.com/iagocolodetti", ""))
             .build();
     }
     
+    private ApiKey apiKey() {
+        return new ApiKey("apiKey", "Authorization", "header");
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder().securityReferences(defaultAuth()).forPaths(PathSelectors.any()).build();
+    }
+
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Arrays.asList(new SecurityReference("apiKey", authorizationScopes));
+    }
 }

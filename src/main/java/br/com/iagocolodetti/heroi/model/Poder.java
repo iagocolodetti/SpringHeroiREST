@@ -1,5 +1,6 @@
 package br.com.iagocolodetti.heroi.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,12 +22,14 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Poder implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -494770409437666040L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(hidden = true)
     private Integer id;
     
+    @ApiModelProperty(value = "Nome do poder que o herói possui", example = "Poder")
     private String descricao;
     @JoinColumn(name = "heroi_id", referencedColumnName = "id")
     @ManyToOne
